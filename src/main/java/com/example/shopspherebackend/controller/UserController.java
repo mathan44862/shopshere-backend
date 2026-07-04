@@ -1,6 +1,7 @@
 package com.example.shopspherebackend.controller;
 
-import com.example.shopspherebackend.entity.User;
+import com.example.shopspherebackend.dto.UserRequestDTO;
+import com.example.shopspherebackend.dto.UserResponseDTO;
 import com.example.shopspherebackend.service.UserService;
 
 import org.springframework.web.bind.annotation.*;
@@ -18,12 +19,12 @@ public class UserController {
     }
 
     @PostMapping
-    public User createUser(@RequestBody User user) {
-        return service.createUser(user);
+    public UserResponseDTO createUser(@RequestBody UserRequestDTO request) {
+        return service.createUser(request);
     }
 
     @GetMapping
-    public List<User> getUsers() {
+    public List<UserResponseDTO> getUsers() {
         return service.getAllUsers();
     }
 }
