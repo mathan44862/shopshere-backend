@@ -1,5 +1,7 @@
 package com.example.shopspherebackend.service;
 
+import com.example.shopspherebackend.dto.UserRequestDTO;
+import com.example.shopspherebackend.dto.UserResponseDTO;
 import com.example.shopspherebackend.entity.User;
 import com.example.shopspherebackend.repository.UserRepository;
 
@@ -16,11 +18,29 @@ public class UserService {
         this.repository = repository;
     }
 
-    public User createUser(User user) {
-        return repository.save(user);
+    public UserResponseDTO createUser(UserRequestDTO request) {
+        User user = new User();
+        user.setName(request.name());
+        user.setEmail(request.email());
+        user.setPassword(request.password());
+        user.setPhone(request.phone());
+
+        return toResponseDTO(repository.save(user));
     }
 
-    public List<User> getAllUsers() {
-        return repository.findAll();
+    public List<UserResponseDTO> getAllUsers() {
+        return repository.findAll()
+                .stream()
+                .map(this::toResponseDTO)
+                .toList();
+    }
+
+    private UserResponseDTO toResponseDTO(User user) {
+        return new UserResponseDTO(
+                user.getId(),
+                user.getName(),
+                user.getEmail(),
+                user.getPhone()
+        );
     }
 }
