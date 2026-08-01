@@ -4,6 +4,9 @@ import com.example.shopspherebackend.dto.UserRequestDTO;
 import com.example.shopspherebackend.dto.UserResponseDTO;
 import com.example.shopspherebackend.service.UserService;
 
+import jakarta.validation.Valid;
+
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,12 +22,28 @@ public class UserController {
     }
 
     @PostMapping
-    public UserResponseDTO createUser(@RequestBody UserRequestDTO request) {
+    public UserResponseDTO createUser(@Valid @RequestBody UserRequestDTO request) {
         return service.createUser(request);
     }
 
     @GetMapping
     public List<UserResponseDTO> getUsers() {
         return service.getAllUsers();
+    }
+
+    @PutMapping("/{id}")
+    public UserResponseDTO updateUser(@PathVariable Long id, @Valid @RequestBody UserRequestDTO request) {
+        return service.updateUser(id, request);
+    }
+
+    @GetMapping("/{id}")
+    public UserResponseDTO getUserbyID(@PathVariable Long id) {
+        return service.getUserByID(id);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteUserbyId(@PathVariable Long id) {
+        service.deleteUserByID(id);
+        return ResponseEntity.ok("User deleted successfully");
     }
 }
