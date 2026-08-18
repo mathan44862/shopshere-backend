@@ -69,6 +69,22 @@ public class GlobalExceptionHandler {
                                 .body(new ErrorResponse(List.of(message)));
         }
 
+        @ExceptionHandler(IllegalArgumentException.class)
+        public ResponseEntity<ErrorResponse> handleIllegalArgumentException(
+                        IllegalArgumentException ex) {
+
+                return ResponseEntity.badRequest()
+                                .body(new ErrorResponse(List.of(ex.getMessage())));
+        }
+
+        @ExceptionHandler(SecurityException.class)
+        public ResponseEntity<ErrorResponse> handleSecurityException(
+                        SecurityException ex) {
+
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                                .body(new ErrorResponse(List.of(ex.getMessage())));
+        }
+
         @ExceptionHandler(RuntimeException.class)
         public ResponseEntity<ErrorResponse> handleRuntimeException(
                         RuntimeException ex) {

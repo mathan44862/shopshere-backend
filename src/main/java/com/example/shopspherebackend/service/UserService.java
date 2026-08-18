@@ -2,6 +2,7 @@ package com.example.shopspherebackend.service;
 
 import java.util.List;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.example.shopspherebackend.dto.UserRequestDTO;
@@ -13,16 +14,18 @@ import com.example.shopspherebackend.repository.UserRepository;
 public class UserService {
 
     private final UserRepository repository;
+    private final PasswordEncoder passwordEncoder;
 
-    public UserService(UserRepository repository) {
+    public UserService(UserRepository repository, PasswordEncoder passwordEncoder) {
         this.repository = repository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public UserResponseDTO createUser(UserRequestDTO request) {
         User user = new User();
         user.setName(request.name());
         user.setEmail(request.email());
-        user.setPassword(request.password());
+        user.setPassword(passwordEncoder.encode(request.password()));
         user.setPhone(request.phone());
         user.setRole(request.role());
         return toResponseDTO(repository.save(user));
@@ -40,7 +43,9 @@ public class UserService {
                 .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
         user.setEmail(request.email());
         user.setName(request.name());
+        user.setPassword(passwordEncoder.encode(request.password()));
         user.setPhone(request.phone());
+        user.setRole(request.role());
         return toResponseDTO(repository.save(user));
     }
 
