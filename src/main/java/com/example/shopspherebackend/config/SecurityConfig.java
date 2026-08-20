@@ -2,6 +2,7 @@ package com.example.shopspherebackend.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -18,6 +19,14 @@ public class SecurityConfig {
             "/swagger-ui.html",
             "/swagger-ui/**",
             "/v3/api-docs/**"
+    };
+
+    public static final String[] ADMIN_URLS = {
+            "/products/**",
+            "/categories/**",
+            "/inventory/**",
+            "/coupons/**",
+            "/analytics/**"
     };
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
@@ -44,6 +53,10 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(PUBLIC_URLS)
                         .permitAll()
+                        .requestMatchers(HttpMethod.DELETE, ADMIN_URLS).hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, ADMIN_URLS).hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PATCH, ADMIN_URLS).hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.POST, ADMIN_URLS).hasRole("ADMIN")
                         .anyRequest()
                         .authenticated())
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
